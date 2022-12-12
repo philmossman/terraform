@@ -47,4 +47,10 @@ resource "proxmox_vm_qemu" "ubuntu-server" {
   sshkeys = <<EOF
   ${var.ssh_pub_key}
   EOF
+
+  provisioner "remote-exec" {
+    inline = [
+      "systemctl start qemu-guest-agent"
+    ]
+  }
 }
