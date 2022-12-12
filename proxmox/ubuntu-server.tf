@@ -17,7 +17,8 @@ resource "proxmox_vm_qemu" "ubuntu-server" {
   clone = "ubuntu-server-jammy"
 
   # VM System Settings
-  agent = 1
+  agent   = 1
+  qemu_os = "l26"
 
   # VM CPU Settings
   cores   = 2
@@ -31,7 +32,7 @@ resource "proxmox_vm_qemu" "ubuntu-server" {
   network {
     bridge = "vmbr0"
     model  = "virtio"
-    tag = "23"
+    tag    = "23"
   }
 
   # VM Cloud-Init Settings

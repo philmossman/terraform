@@ -27,7 +27,7 @@ variable "proxmox_api_token_secret" {
 }
 
 variable "ssh_pub_key" {
-  type = string
+  type      = string
   sensitive = true
 }
 
