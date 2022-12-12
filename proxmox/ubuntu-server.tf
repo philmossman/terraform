@@ -2,7 +2,7 @@
 # ---
 # Create a new Ubuntu Server from a packer clone
 
-resource "proxmox_vm_qemu" "your-vm" {
+resource "proxmox_vm_qemu" "ubuntu-server" {
 
   # VM General Settings
   target_node = "pve"
@@ -34,11 +34,6 @@ resource "proxmox_vm_qemu" "your-vm" {
     tag = "23"
   }
 
-  variable "ssh_pub_key" {
-  type = string
-  sensitive = true
-  }
-
   # VM Cloud-Init Settings
   os_type = "cloud-init"
 
@@ -50,6 +45,6 @@ resource "proxmox_vm_qemu" "your-vm" {
 
   # (Optional) Add your SSH KEY
   sshkeys = <<EOF
-  var.ssh_pub_key
+  ${var.ssh_pub_key}
   EOF
 }

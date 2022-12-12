@@ -26,6 +26,11 @@ variable "proxmox_api_token_secret" {
   type = string
 }
 
+variable "ssh_pub_key" {
+  type = string
+  sensitive = true
+}
+
 provider "proxmox" {
 
   pm_api_url          = var.proxmox_api_url
