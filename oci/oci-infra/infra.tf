@@ -36,12 +36,33 @@ resource "oci_core_security_list" "private_subnet_sl" {
     destination_type = "CIDR_BLOCK"
     protocol         = "all"
   }
-  
+
   ingress_security_rules {
     stateless   = false
     source      = "10.0.0.0/16"
     source_type = "CIDR_BLOCK"
     protocol    = "all"
+  }
+
+  ingress_security_rules {
+    stateless   = false
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    protocol    = "6"
+    tcp_options {
+      min = 10256
+      max = 10256
+    }
+  }
+  ingress_security_rules {
+    stateless   = false
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    protocol    = "6"
+    tcp_options {
+      min = 31600
+      max = 31600
+    }
   }
 }
 
@@ -59,14 +80,42 @@ resource "oci_core_security_list" "public_subnet_sl" {
     destination_type = "CIDR_BLOCK"
     protocol         = "all"
   }
-
+  egress_security_rules {
+    stateless        = false
+    destination      = "10.0.1.0/24"
+    destination_type = "CIDR_BLOCK"
+    protocol         = "6"
+    tcp_options {
+      min = 31600
+      max = 31600
+    }
+  }
+  egress_security_rules {
+    stateless        = false
+    destination      = "10.0.1.0/24"
+    destination_type = "CIDR_BLOCK"
+    protocol         = "6"
+    tcp_options {
+      min = 10256
+      max = 10256
+    }
+  }
+  ingress_security_rules {
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+    source_type = "CIDR_BLOCK"
+    stateless   = false
+    tcp_options {
+      max = 80
+      min = 80
+    }
+  }
   ingress_security_rules {
     stateless   = false
     source      = "10.0.0.0/16"
     source_type = "CIDR_BLOCK"
     protocol    = "all"
   }
-
   ingress_security_rules {
     stateless   = false
     source      = "0.0.0.0/0"
@@ -107,7 +156,7 @@ resource "oci_core_subnet" "vcn_public_subnet" {
 
 resource "oci_containerengine_cluster" "k8s_cluster" {
   compartment_id     = var.compartment_id
-  kubernetes_version = "v1.26"
+  kubernetes_version = "v1.24.1"
   name               = "free-k8s-cluster"
   vcn_id             = module.vcn.vcn_id
 
@@ -129,3 +178,51 @@ resource "oci_containerengine_cluster" "k8s_cluster" {
   }
 }
 
+// provision for availability domains
+
+data "oci_identity_availability_domains" "ads" {
+  compartment_id = var.compartment_id
+}
+// ...previous things are omitted for simplicity
+
+resource "oci_containerengine_node_pool" "k8s_node_pool" {
+  cluster_id         = oci_containerengine_cluster.k8s_cluster.id
+  compartment_id     = var.compartment_id
+  kubernetes_version = "v1.24.1"
+  name               = "free-k8s-node-pool"
+  node_config_details {
+    placement_configs {
+      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+      subnet_id           = oci_core_subnet.vcn_private_subnet.id
+    }
+    // placement_configs {
+    //  availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
+    //  subnet_id           = oci_core_subnet.vcn_private_subnet.id
+    // }
+    // placement_configs {
+    //   availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
+    //   subnet_id           = oci_core_subnet.vcn_private_subnet.id
+    // }
+    size = 4
+
+
+  }
+  node_shape = "VM.Standard.A1.Flex"
+
+  node_shape_config {
+    memory_in_gbs = 6
+    ocpus         = 1
+  }
+
+  node_source_details {
+    image_id    = "ocid1.image.oc1.uk-cardiff-1.aaaaaaaahwtn756nfk3au4364jes5i6xfywqdbkhp2smhjiraayu7yrmmu4a"
+    source_type = "image"
+  }
+
+  initial_node_labels {
+    key   = "name"
+    value = "free-k8s-cluster"
+  }
+
+  ssh_public_key = var.ssh_public_key
+}
