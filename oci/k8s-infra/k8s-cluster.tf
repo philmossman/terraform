@@ -12,46 +12,6 @@ resource "kubernetes_namespace" "free_namespace" {
   }
 }
 
-// deploy nginx
-
-resource "kubernetes_deployment" "nginx_deployment" {
-  metadata {
-    name = "nginx"
-    labels = {
-      app = "nginx"
-    }
-    namespace = kubernetes_namespace.free_namespace.id
-  }
-
-  spec {
-    replicas = 1
-
-    selector {
-      match_labels = {
-        app = "nginx"
-      }
-    }
-
-    template {
-      metadata {
-        labels = {
-          app = "nginx"
-        }
-      }
-
-      spec {
-        container {
-          image = "nginx"
-          name  = "nginx"
-          port {
-            container_port = 80
-          }
-        }
-      }
-    }
-  }
-}
-
 // NodePort Kubernetes Service
 
 resource "kubernetes_service" "nginx_service" {

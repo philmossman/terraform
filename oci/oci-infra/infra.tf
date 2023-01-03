@@ -203,7 +203,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
     //   availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
     //   subnet_id           = oci_core_subnet.vcn_private_subnet.id
     // }
-    size = 4
+    size = 3
 
 
   }
@@ -225,4 +225,14 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   }
 
   ssh_public_key = var.ssh_public_key
+}
+
+// private docker repository
+
+resource "oci_artifacts_container_repository" "docker_repository" {
+  compartment_id = var.compartment_id
+  display_name   = "free-kubernetes-nginx"
+
+  is_immutable = false
+  is_public    = false
 }
