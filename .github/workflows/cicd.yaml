@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - app/**
+      - oci/app/**
   workflow_dispatch: 
 
 jobs:
