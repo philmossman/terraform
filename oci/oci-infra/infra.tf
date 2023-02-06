@@ -215,7 +215,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   }
 
   node_source_details {
-    image_id    = "ocid1.image.oc1.uk-cardiff-1.aaaaaaaahwtn756nfk3au4364jes5i6xfywqdbkhp2smhjiraayu7yrmmu4a"
+    image_id    = "ocid1.image.oc1.uk-london-1.aaaaaaaaeoeobw6ukfxnp2ah24ewfdeq5e5v7lzjhfw7csfq67ogcu2q33aq"
     source_type = "image"
   }
 
