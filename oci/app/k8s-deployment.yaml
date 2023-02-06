@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: https://cwl.ocir.io/<DOCKER_OBJECT_STORAGE_NAMESPACE>/free-kubernetes-nginx:latest
+          image: https://lhr.ocir.io/<DOCKER_OBJECT_STORAGE_NAMESPACE>/free-kubernetes-nginx:latest
           ports:
             - containerPort: 80
       imagePullSecrets:
-      - name: free-registry-secret
+        - name: free-registry-secret
