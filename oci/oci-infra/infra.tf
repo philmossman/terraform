@@ -203,7 +203,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
       subnet_id           = oci_core_subnet.vcn_private_subnet.id
     }
-    size = 3
+    size = 2
 
 
   }
