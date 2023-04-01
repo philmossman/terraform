@@ -6,9 +6,54 @@ provider "oci" {
   region = var.region
 }
 
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/free-k8s-config"
+  }
+}
+
 resource "kubernetes_namespace" "free_namespace" {
   metadata {
     name = "free-ns"
+  }
+}
+
+resource "kubernetes_namespace" "netdata" {
+  metadata {
+    name = "netdata"
+  }
+}
+
+// netdata helm chart
+resource "helm_release" "netdata" {
+  name       = "netdata"
+  repository = "https://netdata.github.io/helmchart"
+  chart      = "netdata"
+  namespace  = kubernetes_namespace.netdata.id
+
+  set {
+    name = "image.tag"
+    value = "stable"
+  }
+
+  set {
+    name = "parent.claiming.enabled"
+    value = "true"
+  }
+
+  set {
+    name = "parent.claiming.token"
+    value = var.netdata_token
+  }
+
+  set {
+    name = "child.claiming.enabled"
+    value = "true"
+  }
+
+  set {
+    name = "child.claiming.token"
+    value = var.netdata_token
   }
 }
 

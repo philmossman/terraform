@@ -17,3 +17,8 @@ variable "node_pool_id" {
   type = string
   description = "The OCID of the Node Pool where the compute instances reside"
 }
+
+variable "netdata_token" {
+  type = string
+  description = "netdata cloud token"
+}
