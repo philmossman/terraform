@@ -195,14 +195,14 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
       subnet_id           = oci_core_subnet.vcn_private_subnet.id
     }
-    placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
-      subnet_id           = oci_core_subnet.vcn_private_subnet.id
-    }
-    placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
-      subnet_id           = oci_core_subnet.vcn_private_subnet.id
-    }
+//    placement_configs {
+//      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
+//      subnet_id           = oci_core_subnet.vcn_private_subnet.id
+//    }
+//    placement_configs {
+//      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
+//      subnet_id           = oci_core_subnet.vcn_private_subnet.id
+//    }
     size = 2
 
 
@@ -215,7 +215,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   }
 
   node_source_details {
-    image_id    = "ocid1.image.oc1.uk-london-1.aaaaaaaaeoeobw6ukfxnp2ah24ewfdeq5e5v7lzjhfw7csfq67ogcu2q33aq"
+    image_id    = "ocid1.image.oc1.uk-cardiff-1.aaaaaaaavbqybpjvkdlcuczwqbfbgmaf4i3rbydd6tbicf6zvj55o7rgkxta"
     source_type = "image"
   }
 
